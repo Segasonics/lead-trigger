@@ -47,7 +47,13 @@ export const dentalLeadsOrchestrator = schedules.task({
       const practices = await searchDentalPractices(location);
       console.log(`[dental-leads-orchestrator] Found ${practices.length} practices in ${location}`);
 
-      for (const practice of practices) {
+      // Pre-filter: only dispatch practices with no website listed.
+      // No website = instant 60 points = always qualifies.
+      // This eliminates ~80% of noise runs in Trigger.dev.
+      const noWebsite = practices.filter((p) => !p.website);
+      console.log(`[dental-leads-orchestrator] ${noWebsite.length}/${practices.length} have no website — dispatching those`);
+
+      for (const practice of noWebsite) {
         // Idempotency key: same practice won't be processed twice in the same week
         const idempotencyKey = `dental-lead-${practice.placeId ?? practice.title}-${weekStamp}`
           .toLowerCase()

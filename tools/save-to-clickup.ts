@@ -37,11 +37,47 @@ function buildDescription(lead: LeadRecord): string {
   ].join("\n");
 }
 
+interface ClickUpTask {
+  id: string;
+  name: string;
+  url: string;
+}
+
+interface ClickUpTasksResponse {
+  tasks: ClickUpTask[];
+}
+
+async function findExistingTask(
+  businessName: string,
+  apiKey: string,
+  listId: string
+): Promise<boolean> {
+  const search = encodeURIComponent(businessName);
+  const response = await fetch(
+    `${CLICKUP_API}/list/${listId}/task?search=${search}&include_closed=true`,
+    { headers: { Authorization: apiKey } }
+  );
+
+  if (!response.ok) return false;
+
+  const data = (await response.json()) as ClickUpTasksResponse;
+  return data.tasks.some(
+    (t) => t.name.toLowerCase() === businessName.toLowerCase()
+  );
+}
+
 export async function saveToClickUp(lead: LeadRecord): Promise<void> {
   const apiKey = process.env.CLICKUP_API_KEY;
   const listId = process.env.CLICKUP_LIST_ID;
   if (!apiKey) throw new Error("CLICKUP_API_KEY is not set");
   if (!listId) throw new Error("CLICKUP_LIST_ID is not set");
+
+  // Skip if this business already exists in the list
+  const exists = await findExistingTask(lead.businessName, apiKey, listId);
+  if (exists) {
+    console.log(`[save-to-clickup] Skipped (already exists): ${lead.businessName}`);
+    return;
+  }
 
   const body = {
     name: lead.businessName,
@@ -65,6 +101,6 @@ export async function saveToClickUp(lead: LeadRecord): Promise<void> {
     throw new Error(`ClickUp API error ${response.status}: ${err}`);
   }
 
-  const task = await response.json() as { id: string; url: string };
+  const task = await response.json() as ClickUpTask;
   console.log(`[save-to-clickup] Created task: ${task.url}`);
 }
