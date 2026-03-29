@@ -1,0 +1,25 @@
+# Secrets — never commit these
+.env
+.env.*
+!.env.example
+credentials.json
+token.json
+*.pem
+*.key
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.output/
+
+# Trigger.dev internal
+.trigger/
+
+# Temp files
+.tmp/
+
+# OS
+.DS_Store
+Thumbs.db
