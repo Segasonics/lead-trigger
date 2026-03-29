@@ -1,10 +1,13 @@
 # Dental Lead Scraper — SOP
 
 ## Objective
+
 Every Monday at 6am UTC, automatically find dental practices that are likely to need a website or website upgrade. Save qualified leads to a Google Sheet for outreach.
 
 ## What Makes a Good Lead
+
 A dental practice is worth contacting if:
+
 - They have **no website** — biggest opportunity (score +60)
 - Their website is **outdated** — old copyright, no modern framework (score +35)
 - Their website is **poor** — tiny page, broken, or unreachable (score +40)
@@ -42,29 +45,29 @@ dental-leads-orchestrator.ts
 
 ## Required Inputs
 
-| Variable | Where to Get It |
-|----------|-----------------|
-| `TRIGGER_SECRET_KEY` | trigger.dev → Project → Settings |
-| `TRIGGER_PROJECT_ID` | trigger.dev → Project → Settings |
-| `SERPER_API_KEY` | serper.dev (free tier: 2,500 searches/month) |
-| `GOOGLE_SHEET_ID` | Spreadsheet URL → the long ID string |
-| `GOOGLE_SERVICE_ACCOUNT_JSON` | Google Cloud Console → IAM → Service Accounts |
-| `SEARCH_LOCATIONS` | Semicolon-separated cities (optional, has defaults) |
+| Variable                      | Where to Get It                                     |
+| ----------------------------- | --------------------------------------------------- |
+| `TRIGGER_SECRET_KEY`          | trigger.dev → Project → Settings                    |
+| `TRIGGER_PROJECT_ID`          | trigger.dev → Project → Settings                    |
+| `SERPER_API_KEY`              | serper.dev (free tier: 2,500 searches/month)        |
+| `GOOGLE_SHEET_ID`             | Spreadsheet URL → the long ID string                |
+| `GOOGLE_SERVICE_ACCOUNT_JSON` | Google Cloud Console → IAM → Service Accounts       |
+| `SEARCH_LOCATIONS`            | Semicolon-separated cities (optional, has defaults) |
 
 ---
 
 ## Lead Scoring Table
 
-| Condition | Points |
-|-----------|--------|
-| No website | +60 |
-| Poor/unreachable website | +40 |
-| Outdated website (old copyright) | +35 |
-| Basic website (no SSL / not mobile) | +25 |
-| >100 reviews | +30 |
-| >50 reviews | +20 |
-| >10 reviews | +10 |
-| Rating ≥ 4.0 | +10 |
+| Condition                           | Points |
+| ----------------------------------- | ------ |
+| No website                          | +60    |
+| Poor/unreachable website            | +40    |
+| Outdated website (old copyright)    | +35    |
+| Basic website (no SSL / not mobile) | +25    |
+| >100 reviews                        | +30    |
+| >50 reviews                         | +20    |
+| >10 reviews                         | +10    |
+| Rating ≥ 4.0                        | +10    |
 
 **Save threshold: 50 points**
 
@@ -72,18 +75,18 @@ dental-leads-orchestrator.ts
 
 ## Output — Google Sheet ("Leads" tab)
 
-| Column | Description |
-|--------|-------------|
-| Business Name | Practice name |
-| Address | Full street address |
-| Phone | Phone number |
-| Website | URL or "No website" |
+| Column         | Description                                     |
+| -------------- | ----------------------------------------------- |
+| Business Name  | Practice name                                   |
+| Address        | Full street address                             |
+| Phone          | Phone number                                    |
+| Website        | URL or "No website"                             |
 | Website Status | none / poor / outdated / basic / active / error |
-| Rating | Google rating (0–5) |
-| Review Count | Number of Google reviews |
-| Lead Score | 0–100 |
-| Location | City searched |
-| Date Found | YYYY-MM-DD |
+| Rating         | Google rating (0–5)                             |
+| Review Count   | Number of Google reviews                        |
+| Lead Score     | 0–100                                           |
+| Location       | City searched                                   |
+| Date Found     | YYYY-MM-DD                                      |
 
 ---
 
